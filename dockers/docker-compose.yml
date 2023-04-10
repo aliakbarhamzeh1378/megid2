@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  elastic:
+    image: elasticsearch:7.17.0
+    hostname: elastic-node-1
+    environment:
+      - ingest.geoip.downloader.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - cluster.name=es-cluster
+      - node.name=es-node-1
+      - path.data=/usr/share/elasticsearch/data
+      - http.port=9200
+      - http.host=0.0.0.0
+      - transport.host=127.0.0.1
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    networks:
+      - iot-networks
+
+#  kibana:
+#    image: docker.elastic.co/kibana/kibana:7.17.7
+#    environment:
+#      - ELASTICSEARCH_HOSTS=http://elastic-node-1:9200
+#    networks:
+#      - iot-networks
+#    depends_on:
+#      - elastic
+#    ports:
+#      - "5601:5601"
+
+  fluentd:
+    image: fluent
+    build:
+      context: .
+      dockerfile: fluentd/Dockerfile
+    expose:
+      - "24224"
+      - "42186"
+      - "9200"
+    ports:
+      - "24224:24224"
+    networks:
+      - iot-networks
+
+networks:
+  iot-networks:
+    name: iot-networks
