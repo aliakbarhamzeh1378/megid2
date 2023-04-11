@@ -23,16 +23,16 @@ services:
     networks:
       - iot-networks
 
-#  kibana:
-#    image: docker.elastic.co/kibana/kibana:7.17.7
-#    environment:
-#      - ELASTICSEARCH_HOSTS=http://elastic-node-1:9200
-#    networks:
-#      - iot-networks
-#    depends_on:
-#      - elastic
-#    ports:
-#      - "5601:5601"
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.7
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elastic-node-1:9200
+    networks:
+      - iot-networks
+    depends_on:
+      - elastic
+    ports:
+      - "5601:5601"
 
   fluentd:
     image: fluent
