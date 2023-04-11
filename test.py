@@ -1,48 +1,23 @@
-import time
-from datetime import datetime, timedelta
+import paho.mqtt.client as mqtt
 
-from elasticsearch import Elasticsearch
-from elasticsearch.helpers import bulk
+#Connection success callback
+def on_connect(client, userdata, flags, rc):
+    print('Connected with result code '+str(rc))
+    client.subscribe('testtopic/#')
 
-# create an Elasticsearch client instance
-es = Elasticsearch()
+# Message receiving callback
+def on_message(client, userdata, msg):
+    print(msg.topic+" "+str(msg.payload))
 
-# specify the index name
-index_name = 'logstash-2023.04.10'
-# define the index mapping
-# get the current time
-current_time = datetime.now()
+client = mqtt.Client()
 
-# define the time interval for the search
-time_window = timedelta(minutes=5)
+# Specify callback function
+client.on_connect = on_connect
+client.on_message = on_message
 
-# calculate the start and end times for the search interval
-start_time = current_time - time_window
-end_time = current_time + time_window
+# Establish a connection
+client.connect('broker.emqx.io', 1883, 60)
+# Publish a message
+client.publish('emqtt',payload='Hello World',qos=0)
 
-# specify the search query
-search_query = {
-    "query": {
-        "match_all": {}
-    },
-    "sort": [
-        {
-            "@timestamp": {
-                "order": "desc"
-            }
-        }
-    ],
-    "size": 1
-}
-
-
-for i in range(0,1000):
-    # execute the search query
-    search_result = es.search(index=index_name, body=search_query)
-
-    # extract the hit from the search result
-    hit = search_result['hits']['hits'][0]
-
-    # do something with the hit
-    print(hit['_source'])
-    time.sleep(2)
+client.loop_forever()

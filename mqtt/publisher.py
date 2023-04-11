@@ -1,7 +1,6 @@
-import redis
-import json
-import paho.mqtt.publish as publish
 import time
+import paho.mqtt.publish as publish
+import redis
 
 
 class RedisMQTT:
@@ -55,5 +54,5 @@ class RedisMQTT:
 
 
 if __name__ == '__main__':
-    aaa = RedisMQTT('localhost', 6379, 'localhost', 1883)
+    aaa = RedisMQTT('localhost', 6379, 'broker.emqx.io', 1883)
     aaa.check_and_publish()

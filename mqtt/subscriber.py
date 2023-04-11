@@ -27,25 +27,26 @@ class MqttToFluentd:
             data = message.payload.decode('utf-8')
 
             # Parse the message data into individual data points
-            fanVal, heaterVal, waterPumpVal, lightVal, humidityValue, tempValue, soilMoistureValue, lightValue, silo3, silo4, la, sn, lo, ew = data.split(
+            waterPumpVal, lightVal, fanVal, heaterVal, POT, tempValue, humidityValue, lightValue, _, soilMoistureValue, la, sn, lo, ew = data.split(
                 ',')
 
             # convert string values to appropriate data types
 
-            print(fanVal, heaterVal, waterPumpVal, lightVal, humidityValue, tempValue, soilMoistureValue, lightValue, silo3, silo4, la, sn, lo, ew)
+            print(fanVal, heaterVal, waterPumpVal, lightVal, POT, tempValue, humidityValue, lightValue, _,
+                  soilMoistureValue, la, sn, lo, ew)
 
             # Create a dictionary to represent the message
             message_dict = {
-                'fanVal': int(fanVal),
-                'heaterVal': int(heaterVal),
-                'waterPumpVal': int(waterPumpVal),
-                'lightVal': int(lightVal),
-                'humidityValue': int(humidityValue),
-                'tempValue': int(tempValue),
-                'soilMoistureValue': int(soilMoistureValue),
-                'lightValue': int(lightValue),
-                'silo3': int(silo3),
-                'silo4': int(silo4),
+                'fanVal': str(fanVal),
+                'POT': str(POT),
+                'heaterVal': str(heaterVal),
+                'waterPumpVal': str(waterPumpVal),
+                'lightVal': str(lightVal),
+                'humidityValue': str(humidityValue),
+                'tempValue': str(tempValue),
+                'soilMoistureValue': str(soilMoistureValue),
+                'lightValue': str(lightValue),
+                '_': str(0),
                 'la': str(la),
                 'lo': str(lo),
                 'sn': str(sn),
@@ -67,5 +68,5 @@ class MqttToFluentd:
 
 
 # Example usage:
-mqtt_to_fluentd = MqttToFluentd('localhost', '#')
+mqtt_to_fluentd = MqttToFluentd('broker.emqx.io', 'TWF7GH/#')
 mqtt_to_fluentd.start()
