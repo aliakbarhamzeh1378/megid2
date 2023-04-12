@@ -25,7 +25,7 @@ class SensorDataView(APIView):
             es = Elasticsearch()
 
             # specify the index name
-            index_name = 'logstash-2023.04.10'
+            index_name = 'fluentd'
             # create a search request with a match_all query and sort by timestamp
             search_request = {
                 'query': {
@@ -35,7 +35,7 @@ class SensorDataView(APIView):
                 },
                 'sort': [
                     {
-                        "@timestamp": {
+                        "time": {
                             'order': 'desc'
                         }
                     }
@@ -47,13 +47,15 @@ class SensorDataView(APIView):
             search_results = es.search(index=index_name, body=search_request)
 
             # extract the hit from the search results
-            hit = search_results['hits']['hits'][0]
+            hit = search_results['hits']['hits']
+            print(hit)
+            hit = hit[0]
 
             # extract the source data from the hit
             source_data = hit['_source']
 
             # print the source data for the last item
-            print(source_data)
+#            print(source_data)
 
             return Response(data=source_data, data_status=status.HTTP_200_OK,
                             message='Get data  successfully',

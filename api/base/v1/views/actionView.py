@@ -9,7 +9,6 @@ from mqtt.publisher import RedisMQTT
 
 
 client = mqtt.Client()
-client.connect('broker.emqx.io', 1883)
 
 
 class ActionView(APIView):
@@ -25,6 +24,8 @@ class ActionView(APIView):
             }
         ))
     def set_data(self, board_id, action_data: str):
+        client.connect('broker.emqx.io', 1883)
+
         data = "000"
         if action_data.lower() == "water off":
             data = "000"
@@ -50,7 +51,8 @@ class ActionView(APIView):
             data = "111"
         else:
             return False
-        client.publish('TWF7GH/S:0001', data)
+        a = client.publish('TWF7GH/S:0001', data)
+        print(a)
         return True
 
     def post(self, request):

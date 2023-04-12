@@ -1,3 +1,4 @@
+from datetime import datetime
 import time
 
 import paho.mqtt.client as mqtt
@@ -25,7 +26,7 @@ class MqttToFluentd:
         try:
             # Extract the received message data
             data = message.payload.decode('utf-8')
-
+            print(data)
             # Parse the message data into individual data points
             waterPumpVal, lightVal, fanVal, heaterVal, POT, tempValue, humidityValue, lightValue, _, soilMoistureValue, la, sn, lo, ew = data.split(
                 ',')
@@ -51,10 +52,11 @@ class MqttToFluentd:
                 'lo': str(lo),
                 'sn': str(sn),
                 'ew': str(ew),
-                'time': time.time(),
+                'time':datetime.now().isoformat(),
                 'slave_id': str(message.topic).split(":")[1]
             }
             # Send the message to Fluentd logger
+            print(message_dict)
             event.Event('', message_dict)
         except Exception as e:
             # Log the exception and continue processing messages

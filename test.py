@@ -1,23 +1,36 @@
-import paho.mqtt.client as mqtt
+from elasticsearch import Elasticsearch
 
-#Connection success callback
-def on_connect(client, userdata, flags, rc):
-    print('Connected with result code '+str(rc))
-    client.subscribe('testtopic/#')
 
-# Message receiving callback
-def on_message(client, userdata, msg):
-    print(msg.topic+" "+str(msg.payload))
 
-client = mqtt.Client()
+es = Elasticsearch()
 
-# Specify callback function
-client.on_connect = on_connect
-client.on_message = on_message
+# specify the index name
+index_name = 'logstash-2023.04.10'
+# create a search request with a match_all query and sort by timestamp
+search_request = {
+'query': {
+    "match": {
+        "slave_id": "0001"
+    }
+},
+'sort': [
+    {
+        "@timestamp": {
+            'order': 'desc'
+        }
+    }
+],
+'size': 1  # only retrieve the last item
+}
 
-# Establish a connection
-client.connect('broker.emqx.io', 1883, 60)
-# Publish a message
-client.publish('emqtt',payload='Hello World',qos=0)
+# execute the search request
+search_results = es.search(index=index_name, body=search_request)
 
-client.loop_forever()
+# extract the hit from the search results
+hit = search_results['hits']['hits'][0]
+
+# extract the source data from the hit
+source_data = hit['_source']
+
+# print the source data for the last item
+print(source_data)
