@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework_jwt.settings import api_settings
 
 from api.base.v1.Response import Response
+from api.base.v1.serializers.userSerializer import UserSerializer
 
 
 class LoginView(APIView):
@@ -25,8 +26,8 @@ class LoginView(APIView):
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'username': openapi.Schema(type=openapi.TYPE_STRING, description='string', default="admin"),
-                'password': openapi.Schema(type=openapi.TYPE_STRING, description='string', default="13781211"),
+                'Username': openapi.Schema(type=openapi.TYPE_STRING, description='string', default="admin"),
+                'Password': openapi.Schema(type=openapi.TYPE_STRING, description='string', default="13781211"),
             }
         ))
     def post(self, request):
@@ -36,6 +37,7 @@ class LoginView(APIView):
                 username = request.data.get("Email")
             password = request.data.get("Password")
             user = authenticate(username=username, password=password)
+            serializer = UserSerializer(user)
             if user is None:
 
                 return Response(data='Login failed', message="Username or password is wrong",
@@ -43,10 +45,7 @@ class LoginView(APIView):
             else:
                 token = self.token_generator(user)
                 return Response(data={'token': token,
-                                      'userInfo': {
-                                          'email': user.Email,
-                                          'permission': user.Permissions,
-                                          'user_id': user.pk}}, data_status=status.HTTP_200_OK,
+                                      'userInfo':serializer.data}, data_status=status.HTTP_200_OK,
                                 message='user was login successfully',
                                 status=status.HTTP_200_OK)
 
