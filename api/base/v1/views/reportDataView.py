@@ -66,7 +66,7 @@ class ReportDataView(APIView):
                 scroll_id = results['_scroll_id']
                 results = es.scroll(scroll_id=scroll_id, scroll='2m')
 
-            return Response(data={'data': data, 'time_elapsed': time.time() - b , 'c':c}, data_status=status.HTTP_200_OK,
+            return Response(data={'data': data, 'time_elapsed': time.time() - b , 'c':c,'data_len':len(data)}, data_status=status.HTTP_200_OK,
                             message='Get data  successfully',
                             status=status.HTTP_200_OK)
         except Exception as e:
