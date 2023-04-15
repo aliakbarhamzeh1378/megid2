@@ -12,7 +12,7 @@ from elasticsearch import Elasticsearch
 # create an Elasticsearch client instance
 
 
-class SensorDataView(APIView):
+class AdminMapView(APIView):
     permission_classes = (IsAuthenticated,)
 
     @swagger_auto_schema(
@@ -21,7 +21,8 @@ class SensorDataView(APIView):
                    400: 'Get data failed'},
     )
     def get(self, request):
-        if request.user.Permission.Access != 4:
+        a = request.user.Permissions.Access
+        if request.user.Permissions.Access != 3:
             return Response(data='Access Denied', message='Access Denied',
                             data_status=status.HTTP_403_FORBIDDEN, status=status.HTTP_200_OK)
         try:
