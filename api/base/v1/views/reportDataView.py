@@ -26,6 +26,8 @@ class ReportDataView(APIView):
         try:
             es = Elasticsearch()
             b = time.time()
+            start = request.query_params.get('start', '2023-04-13')
+            end = request.query_params.get('end', '2023-04-14')
             # specify the index name
             index_name = 'fluentd'
             # create a search request with a match_all query and sort by timestamp
@@ -41,8 +43,8 @@ class ReportDataView(APIView):
                             {
                                 "range": {
                                     "time": {
-                                        "gte": "2023-04-13",
-                                        "lte": "2023-04-16"
+                                        "gte": start,
+                                        "lte": end
                                     }
                                 }
                             }
@@ -66,7 +68,8 @@ class ReportDataView(APIView):
                 scroll_id = results['_scroll_id']
                 results = es.scroll(scroll_id=scroll_id, scroll='2m')
 
-            return Response(data={'data': data, 'time_elapsed': time.time() - b , 'c':c,'data_len':len(data)}, data_status=status.HTTP_200_OK,
+            return Response(data={'data': data, 'time_elapsed': time.time() - b, 'c': c, 'data_len': len(data)},
+                            data_status=status.HTTP_200_OK,
                             message='Get data  successfully',
                             status=status.HTTP_200_OK)
         except Exception as e:
