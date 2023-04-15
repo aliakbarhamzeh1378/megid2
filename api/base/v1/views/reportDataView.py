@@ -55,7 +55,7 @@ class ReportDataView(APIView):
             scroll_size = 1000
             data = []
             results = es.search(index=index_name, body=query, scroll='2m', size=scroll_size)
-
+            c = time.time() - b
             # keep scrolling until there are no more search hits
             while len(results['hits']['hits']) > 0:
                 # do something with the search hits
@@ -66,7 +66,7 @@ class ReportDataView(APIView):
                 scroll_id = results['_scroll_id']
                 results = es.scroll(scroll_id=scroll_id, scroll='2m')
 
-            return Response(data={'data': data, 'time_elapsed': time.time() - b}, data_status=status.HTTP_200_OK,
+            return Response(data={'data': data, 'time_elapsed': time.time() - b , 'c':c}, data_status=status.HTTP_200_OK,
                             message='Get data  successfully',
                             status=status.HTTP_200_OK)
         except Exception as e:
