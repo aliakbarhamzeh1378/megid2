@@ -5,6 +5,7 @@ from api.base.v1.views.checkUserView import CheckUserNameView, CheckEmailView
 from api.base.v1.views.loginView import LoginView
 from api.base.v1.views.permissionView import PermissionView
 from api.base.v1.views.registerView import RegisterView
+from api.base.v1.views.reportDataView import ReportDataView
 from api.base.v1.views.sensorDataView import SensorDataView
 from api.base.v1.views.userView import UserView
 from api.base.v1.views.adminMapView import AdminMapView
@@ -19,5 +20,6 @@ urlpatterns = [
     path('v1/dashboard/', SensorDataView.as_view(), name='get sensors data'),
     path('v1/action/', ActionView.as_view(), name='get sensors data'),
     path('v1/admin_map/', AdminMapView.as_view(), name='get sensors data'),
+    path('v1/report_data/', ReportDataView.as_view(), name='get sensors data'),
 
 ]
