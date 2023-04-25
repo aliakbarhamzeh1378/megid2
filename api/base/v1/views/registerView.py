@@ -48,6 +48,7 @@ class RegisterView(APIView):
                     Username=req['Username'],
                     date_joined=req['DateJoin'],
                     last_login=req['LastLogin'],
+                    Permissions = req['permission']
 
                 )
                 token = self.token_generator(account)
