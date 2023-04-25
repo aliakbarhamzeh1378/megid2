@@ -8,8 +8,10 @@ from rest_framework.views import APIView
 from api.base.v1.Response import Response
 from elasticsearch import Elasticsearch
 
-# create an Elasticsearch client instance
+from cas_server2.settings import Redis
 
+
+# create an Elasticsearch client instance
 
 
 class SensorDataView(APIView):
@@ -23,14 +25,14 @@ class SensorDataView(APIView):
     def get(self, request):
         try:
             es = Elasticsearch()
-
+            board_id = "0001"
             # specify the index name
             index_name = 'fluentd'
             # create a search request with a match_all query and sort by timestamp
             search_request = {
                 'query': {
                     "match": {
-                        "slave_id": "0001"
+                        "slave_id": board_id
                     }
                 },
                 'sort': [
@@ -48,18 +50,26 @@ class SensorDataView(APIView):
 
             # extract the hit from the search results
             hit = search_results['hits']['hits']
-            print(hit)
+            # print(hit)
             hit = hit[0]
 
             # extract the source data from the hit
             source_data = hit['_source']
-
+            a, b, c, d = Redis.get(str(board_id) + "_water"), Redis.get(str(board_id) + "_light"), Redis.get(
+                str(board_id) + "_fan"), Redis.get(str(board_id) + "_heater")
+            print(a, b, c, d)
             # print the source data for the last item
-#            print(source_data)
+            #            print(source_data)
 
-            return Response(data=source_data, data_status=status.HTTP_200_OK,
-                            message='Get data  successfully',
-                            status=status.HTTP_200_OK)
+            return Response(data={
+                'data': source_data,
+                'water': a,
+                'light': b,
+                'fan': c,
+                'heater': d
+            }, data_status=status.HTTP_200_OK,
+                message='Get data  successfully',
+                status=status.HTTP_200_OK)
         except Exception as e:
             return Response(data='Get data failed', message=str(e),
                             data_status=status.HTTP_400_BAD_REQUEST, status=status.HTTP_200_OK)

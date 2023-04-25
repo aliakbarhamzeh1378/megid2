@@ -1,12 +1,14 @@
+import time
+
 import paho.mqtt.client as mqtt
+from django.utils.timezone import now
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.views import APIView
 
 from api.base.v1.Response import Response
-from mqtt.publisher import RedisMQTT
-
+from cas_server2.settings import Redis
 
 client = mqtt.Client()
 
@@ -25,32 +27,52 @@ class ActionView(APIView):
         ))
     def set_data(self, board_id, action_data: str):
         client.connect('broker.emqx.io', 1883)
-
+        key = ''
+        value = str(now().hour) + ":" + str(now().minute )+ ":" +str( now().second)
         data = "000"
         if action_data.lower() == "water off":
+            key =str(board_id) + "_water"
             data = "000"
         elif action_data.lower() == "water on":
+            key =str(board_id) + "_water"
+
             data = "001"
 
         elif action_data.lower() == "light off":
+            key =str(board_id) + "_light"
+
+
             data = "010"
 
         elif action_data.lower() == "light on":
+            key =str(board_id) + "_light"
+
             data = "011"
 
         elif action_data.lower() == "fan off":
+            key =str(board_id) + "_fan"
+
             data = "100"
 
         elif action_data.lower() == "fan on":
+            key =str(board_id) + "_fan"
+
             data = "101"
 
         elif action_data.lower() == "heater off":
+            key =str(board_id) + "_heater"
+
             data = "110"
 
         elif action_data.lower() == "heater on":
+            key =str(board_id) + "_heater"
+
             data = "111"
         else:
             return False
+        print(key,value)
+        c = Redis.set(key,value)
+        print(c)
         a = client.publish('TWF7GH/S:0001', data)
         print(a)
         return True

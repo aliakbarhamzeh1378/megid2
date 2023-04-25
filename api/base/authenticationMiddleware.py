@@ -17,6 +17,7 @@ class AccountAuthenticationMiddleware:
 
                     token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
                     Credentials = jwt.decode(token, SECRET_KEY)
+                    print(Credentials)
                     request._force_auth_user = UserModel.objects.get(id=Credentials['user_id'])
 
                 except Exception as e:

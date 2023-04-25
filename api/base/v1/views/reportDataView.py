@@ -9,6 +9,12 @@ from rest_framework.views import APIView
 
 from api.base.v1.Response import Response
 from elasticsearch import Elasticsearch
+from elasticsearch import helpers
+
+es = Elasticsearch()
+
+# Set the number of results per section
+section_size = 100
 
 
 # create an Elasticsearch client instance
@@ -29,8 +35,7 @@ class ReportDataView(APIView):
             start = request.query_params.get('start', '2023-04-13')
             end = request.query_params.get('end', '2023-04-14')
             # specify the index name
-            index_name = 'fluentd'
-            # create a search request with a match_all query and sort by timestamp
+            # Set up the search query
             query = {
                 "query": {
                     "bool": {
@@ -53,22 +58,21 @@ class ReportDataView(APIView):
                 }
             }
 
-            # execute the search query and retrieve all search hits
-            scroll_size = 1000
             data = []
-            results = es.search(index=index_name, body=query, scroll='2m', size=scroll_size)
-            c = time.time() - b
-            # keep scrolling until there are no more search hits
-            while len(results['hits']['hits']) > 0:
-                # do something with the search hits
-                for hit in results['hits']['hits']:
+            # Use the helpers.scan method to iterate over all results
+            for i, hit in enumerate(helpers.scan(
+                    es,
+                    query=query,
+                    index='fluentd',
+                    scroll='2m',
+                    size=section_size
+            )):
+                # Print the first item of each section
+                if i % section_size == 0:
+                    print(hit['_source'])
                     data.append(hit['_source'])
 
-                # get the next page of search hits using the scroll API
-                scroll_id = results['_scroll_id']
-                results = es.scroll(scroll_id=scroll_id, scroll='2m')
-
-            return Response(data={'data': data, 'time_elapsed': time.time() - b, 'c': c, 'data_len': len(data)},
+            return Response(data={'data': data},
                             data_status=status.HTTP_200_OK,
                             message='Get data  successfully',
                             status=status.HTTP_200_OK)
