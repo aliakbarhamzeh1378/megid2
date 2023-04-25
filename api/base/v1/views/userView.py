@@ -19,7 +19,7 @@ class UserView(APIView):
     )
     def get(self, request):
         try:
-            print(request.user.Permissions)
+            print(request.user)
             users = UserModel.objects.filter(Permissions__Access__lte=request.user.Permissions.Access)
             serializer = UserSerializer(users, many=True)
             return Response(data=serializer.data, data_status=status.HTTP_201_CREATED,

@@ -32,6 +32,7 @@ class ReportDataView(APIView):
         try:
             es = Elasticsearch()
             b = time.time()
+            board_id = request.user.Slave_id
             start = request.query_params.get('start', '2023-04-13')
             end = request.query_params.get('end', '2023-04-14')
             # specify the index name
@@ -42,7 +43,7 @@ class ReportDataView(APIView):
                         "must": [
                             {
                                 "match": {
-                                    "slave_id": "0001"
+                                    "slave_id": board_id
                                 }
                             },
                             {
