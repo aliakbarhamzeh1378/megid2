@@ -37,7 +37,6 @@ class RegisterView(APIView):
     def post(self, request):
         try:
             req = request.data.copy()
-            req['permission'] = PermissionModel.objects.get(Access=1)
             req['DateJoin'] = datetime.now()
             req['LastLogin'] = datetime.now()
 
@@ -47,7 +46,7 @@ class RegisterView(APIView):
                 Username=req['Username'],
                 date_joined=req['DateJoin'],
                 last_login=req['LastLogin'],
-                Permissions = req['permission']
+                Permissions =  PermissionModel.objects.get(Access=1).pk
 
             )
             token = self.token_generator(account)
