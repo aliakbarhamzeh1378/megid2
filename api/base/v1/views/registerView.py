@@ -9,6 +9,7 @@ from rest_framework_jwt.settings import api_settings
 from rest_framework import status
 
 from api.base.v1.Response import Response
+from api.base.v1.models.permisionsModel import PermissionModel
 from api.base.v1.models.userModel import UserModel
 from api.base.v1.serializers.userSerializer import UserSerializer
 
@@ -36,7 +37,7 @@ class RegisterView(APIView):
     def post(self, request):
         try:
             req = request.data.copy()
-            req['permission'] = None
+            req['permission'] = PermissionModel.objects.get(Access=1)
             serializer = UserSerializer(data=req)
             req['DateJoin'] = datetime.now()
             req['LastLogin'] = datetime.now()
