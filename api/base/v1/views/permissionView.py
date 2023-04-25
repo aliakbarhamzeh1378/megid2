@@ -23,7 +23,7 @@ class PermissionView(APIView):
       )
     def get(self, request):
         try:
-            permissions = PermissionModel.objects.all()
+            permissions = PermissionModel.objects.filter()
             serializer = PermissionSerializer(permissions, many=True)
             return Response(data=serializer.data, data_status=status.HTTP_201_CREATED,
                             message='Get data  successfully',

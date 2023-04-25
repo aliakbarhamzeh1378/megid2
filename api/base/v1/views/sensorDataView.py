@@ -25,7 +25,10 @@ class SensorDataView(APIView):
     def get(self, request):
         try:
             es = Elasticsearch()
-            board_id = "0001"
+            board_id = request.user.Slave_id
+            if board_id is None:
+                return Response(data='Get data failed', message="You dont have any slave id",
+                                data_status=status.HTTP_400_BAD_REQUEST, status=status.HTTP_200_OK)
             # specify the index name
             index_name = 'fluentd'
             # create a search request with a match_all query and sort by timestamp
