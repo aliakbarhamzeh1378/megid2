@@ -15,7 +15,7 @@ from cas_server2.settings import Redis
 
 
 class SensorDataView(APIView):
-    # permission_classes = (    IsAuthenticated,)
+    permission_classes = (    IsAuthenticated,)
 
     @swagger_auto_schema(
         operation_description="Get Permission List Api",
@@ -24,8 +24,10 @@ class SensorDataView(APIView):
     )
     def get(self, request):
         try:
-            es = Elasticsearch()
             board_id = request.user.Slave_id
+            print(board_id)
+            es = Elasticsearch()
+
             if board_id is None:
                 return Response(data='Get data failed', message="You dont have any slave id",
                                 data_status=status.HTTP_400_BAD_REQUEST, status=status.HTTP_200_OK)
