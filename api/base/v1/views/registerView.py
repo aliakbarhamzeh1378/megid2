@@ -38,30 +38,25 @@ class RegisterView(APIView):
         try:
             req = request.data.copy()
             req['permission'] = PermissionModel.objects.get(Access=1)
-            serializer = UserSerializer(data=req)
             req['DateJoin'] = datetime.now()
             req['LastLogin'] = datetime.now()
-            if serializer.is_valid():
-                account = UserModel.objects.create_user(
-                    Email=req['Email'],
-                    password=req['Password'],
-                    Username=req['Username'],
-                    date_joined=req['DateJoin'],
-                    last_login=req['LastLogin'],
-                    Permissions = req['permission']
 
-                )
-                token = self.token_generator(account)
-                return Response(data={'token': token, 'userid': account.id, 'permission': account.Permissions},
-                                data_status=status.HTTP_201_CREATED,
-                                message='successfully registered new user.',
-                                status=status.HTTP_200_OK)
+            account = UserModel.objects.create_user(
+                Email=req['Email'],
+                password=req['Password'],
+                Username=req['Username'],
+                date_joined=req['DateJoin'],
+                last_login=req['LastLogin'],
+                Permissions = req['permission']
 
-            else:
+            )
+            token = self.token_generator(account)
+            return Response(data={'token': token, 'userid': account.id, 'permission': account.Permissions},
+                            data_status=status.HTTP_201_CREATED,
+                            message='successfully registered new user.',
+                            status=status.HTTP_200_OK)
 
-                return Response(data=serializer.errors, data_status=status.HTTP_406_NOT_ACCEPTABLE,
-                                message='Register failed',
-                                status=status.HTTP_200_OK)
+
 
         except Exception as e:
 
