@@ -43,7 +43,7 @@ class UserView(APIView):
             Username = request.data.get('username')
             Slave_id = request.data.get('slave_id')
             Permission = request.data.get('permission')
-            data = {}
+            Password = request.data.get('permission')
             if Email is not None:
                 user.Email = Email
 
@@ -53,9 +53,12 @@ class UserView(APIView):
             if Slave_id is not None:
                 user.Slave_id = Slave_id
 
+            if Password is not None and len(Password) != 0:
+                user.set_password(Password)
+
             if Permission is not None:
                 if user.Username != request.user.Username:
-                    if int(Permission) < request.user.Permissions.Access:
+                    if int(Permission) <= request.user.Permissions.Access:
                         user.Permissions = PermissionModel.objects.get(Access=int(Permission))
                     else:
                         return Response(data='You dont have permission for this action',
