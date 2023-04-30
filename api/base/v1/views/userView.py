@@ -76,7 +76,7 @@ class UserView(APIView):
         try:
             user_id = request.data.get('user_id')
             user = UserModel.objects.get(pk=int(user_id))
-            if user.Permission.Access < request.user.Permissions.Access:
+            if user.Permission.Access < request.user.Permissions.Access and request.user.pk != user_id:
                 user.delete()
                 return Response(data={}, data_status=status.HTTP_201_CREATED,
                                 message='set data  successfully',
