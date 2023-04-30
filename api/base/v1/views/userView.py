@@ -54,12 +54,13 @@ class UserView(APIView):
                 user.Slave_id = Slave_id
 
             if Permission is not None:
-                if int(Permission) >= request.user.Permissions.Access:
-                    user.Permissions = PermissionModel.objects.get(Access=int(Permission))
-                else:
-                    return Response(data='You dont have permission for this action',
-                                    message='You dont have permission for this action',
-                                    data_status=status.HTTP_403_FORBIDDEN, status=status.HTTP_200_OK)
+                if user.Username != request.user.Username:
+                    if int(Permission) < request.user.Permissions.Access:
+                        user.Permissions = PermissionModel.objects.get(Access=int(Permission))
+                    else:
+                        return Response(data='You dont have permission for this action',
+                                        message='You dont have permission for this action',
+                                        data_status=status.HTTP_403_FORBIDDEN, status=status.HTTP_200_OK)
             user.save()
             return Response(data={}, data_status=status.HTTP_201_CREATED,
                             message='Get data  successfully',
