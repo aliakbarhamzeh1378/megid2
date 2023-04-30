@@ -71,3 +71,20 @@ class UserView(APIView):
         except Exception as e:
             return Response(data='Get data failed', message=str(e),
                             data_status=status.HTTP_400_BAD_REQUEST, status=status.HTTP_200_OK)
+
+    def delete(self, request):
+        try:
+            user_id = request.data.get('user_id')
+            user = UserModel.objects.get(pk=int(user_id))
+            if user.Permission.Access < request.user.Permissions.Access:
+                user.delete()
+                return Response(data={}, data_status=status.HTTP_201_CREATED,
+                                message='set data  successfully',
+                                status=status.HTTP_200_OK)
+            else:
+                return Response(data='You dont have permission for this action',
+                                message='You dont have permission for this action',
+                                data_status=status.HTTP_403_FORBIDDEN, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(data='Set data failed', message=str(e),
+                            data_status=status.HTTP_400_BAD_REQUEST, status=status.HTTP_200_OK)
