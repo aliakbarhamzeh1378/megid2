@@ -22,7 +22,7 @@ class AdminMapView(APIView):
     )
     def get(self, request):
         a = request.user.Permissions.Access
-        if request.user.Permissions.Access != 3:
+        if request.user.Permissions.Access < 2:
             return Response(data='Access Denied', message='Access Denied',
                             data_status=status.HTTP_403_FORBIDDEN, status=status.HTTP_200_OK)
         try:
@@ -57,6 +57,8 @@ class AdminMapView(APIView):
                     }
                 }
             }
+            if request.user.Permissions.Access == 2:
+                search_request['aggs']['latest_by_slave_id']['terms']['include'] = str(request.user.Slave_id).split(",")
 
             # execute the search request
             search_results = es.search(index=index_name, body=search_request)

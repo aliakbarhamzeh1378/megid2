@@ -15,7 +15,7 @@ from cas_server2.settings import Redis
 
 
 class SensorDataView(APIView):
-    permission_classes = (    IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
     @swagger_auto_schema(
         operation_description="Get Permission List Api",
@@ -24,7 +24,11 @@ class SensorDataView(APIView):
     )
     def get(self, request):
         try:
-            board_id = request.user.Slave_id
+            sensor_name = request.query_params.get('sensor_id')
+            if sensor_name is not None and request.user.Permissions.Access > 1:
+                board_id = sensor_name
+            else:
+                board_id = request.user.Slave_id
             print(board_id)
             es = Elasticsearch()
 
