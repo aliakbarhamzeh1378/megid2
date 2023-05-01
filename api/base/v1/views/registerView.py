@@ -49,7 +49,7 @@ class RegisterView(APIView):
                 Permissions= PermissionModel.objects.get(Access=1)
             )
             token = self.token_generator(account)
-            return Response(data={'token': token, 'userid': account.id, 'permission': account.Permissions},
+            return Response(data={'token': token, 'userid': account.id, 'permission': account.Permissions.Access},
                             data_status=status.HTTP_201_CREATED,
                             message='successfully registered new user.',
                             status=status.HTTP_200_OK)
