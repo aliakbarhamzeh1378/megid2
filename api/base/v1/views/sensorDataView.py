@@ -28,7 +28,7 @@ class SensorDataView(APIView):
             if sensor_name is not None and request.user.Permissions.Access > 1:
                 board_id = sensor_name
             else:
-                board_id = request.user.Slave_id
+                board_id = str(request.user.Slave_id).split(',')[0]
             print(board_id)
             es = Elasticsearch()
 
