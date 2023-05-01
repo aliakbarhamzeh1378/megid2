@@ -45,7 +45,8 @@ class RegisterView(APIView):
                 password=req['Password'],
                 Username=req['Username'],
                 date_joined=req['DateJoin'],
-                last_login=req['LastLogin']
+                last_login=req['LastLogin'],
+                Permissions= PermissionModel.objects.get(Access=1)
             )
             token = self.token_generator(account)
             return Response(data={'token': token, 'userid': account.id, 'permission': account.Permissions},
