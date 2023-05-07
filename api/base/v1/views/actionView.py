@@ -79,7 +79,12 @@ class ActionView(APIView):
     def post(self, request):
         try:
             action = request.data.get('action')
-            res = self.set_data(str(request.user.Slave_id), action)
+            sensor_name = request.query_params.get('sensor_id')
+            if sensor_name is not None and request.user.Permissions.Access > 1:
+                board_id = sensor_name
+            else:
+                board_id = str(request.user.Slave_id).split(',')[0]
+            res = self.set_data(str(board_id), action)
             if res:
                 return Response(data={}, data_status=status.HTTP_200_OK,
                                 message='set data  successfully',
