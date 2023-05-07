@@ -54,12 +54,15 @@ class UserView(APIView):
                 user.Slave_id = Slave_id
 
             try:
+                print("===========")
+                print(Password)
                 if Password is not None:
                     if len(str(Password)) != 0:
                         user.set_password(Password)
                     print("===========")
                     print(Password)
-            except:
+            except Exception as e:
+                print(e)
                 pass
 
             if Permission is not None:
