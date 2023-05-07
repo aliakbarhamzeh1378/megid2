@@ -32,7 +32,11 @@ class ReportDataView(APIView):
         try:
             es = Elasticsearch()
             b = time.time()
-            board_id = request.user.Slave_id
+            sensor_name = request.query_params.get('sensor_id')
+            if sensor_name is not None and request.user.Permissions.Access > 1:
+                board_id = sensor_name
+            else:
+                board_id = str(request.user.Slave_id).split(',')[0]
             start = request.query_params.get('start', '2023-04-13')
             end = request.query_params.get('end', '2023-04-14')
             # specify the index name
