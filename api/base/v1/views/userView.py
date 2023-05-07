@@ -43,7 +43,7 @@ class UserView(APIView):
             Username = request.data.get('username')
             Slave_id = request.data.get('slave_id')
             Permission = request.data.get('permission')
-            Password = request.data.get('permission')
+            Password = request.data.get('password')
             if Email is not None:
                 user.Email = Email
 
