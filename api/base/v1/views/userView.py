@@ -57,6 +57,8 @@ class UserView(APIView):
                 if Password is not None:
                     if len(str(Password)) != 0:
                         user.set_password(Password)
+                    print("===========")
+                    print(Password)
             except:
                 pass
 
