@@ -31,7 +31,6 @@ class ReportDataView(APIView):
     def get(self, request):
         try:
             es = Elasticsearch()
-            b = time.time()
             sensor_name = request.query_params.get('sensor_id')
             if sensor_name is not None and request.user.Permissions.Access > 1:
                 board_id = sensor_name

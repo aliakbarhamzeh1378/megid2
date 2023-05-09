@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api',
+    'greenhouse',
     'drf_yasg',
 ]
 
@@ -175,4 +176,5 @@ SWAGGER_SETTINGS = {
 ELASTICSEARCH_HOST = "localhost"
 ELASTICSEARCH_PORT = 9200
 import redis
+
 Redis = redis.Redis()

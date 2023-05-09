@@ -29,6 +29,7 @@ class UserView(APIView):
             return Response(data='Get data failed', message=str(e),
                             data_status=status.HTTP_400_BAD_REQUEST, status=status.HTTP_200_OK)
 
+
     def put(self, request):
         try:
             user_id = request.data.get('user_id')
