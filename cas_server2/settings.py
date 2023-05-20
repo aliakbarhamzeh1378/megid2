@@ -178,3 +178,6 @@ ELASTICSEARCH_PORT = 9200
 import redis
 
 Redis = redis.Redis()
+GOOGLE_CLIENT_ID = '719801811034-q2up1qutbphgfhk7dsriseq4h4423dpv.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = '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'
+GOOGLE_AUTH_REDIRECT_URI = 'http://127.0.0.1:8001/api/auth/google/callback/'

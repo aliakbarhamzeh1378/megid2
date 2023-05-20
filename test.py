@@ -1,47 +1,54 @@
-from elasticsearch import helpers
-from elasticsearch import Elasticsearch
+import json
 
-es = Elasticsearch()
+json_data = '''
+{
+    "S003": [
+            {
+                "content": "temp",
+                "operator": "<",
+                "value": 2,
+                "status": "and"
+            },
+            {
+                "content": "temp",
+                "operator": ">",
+                "value": 10,
+                "status": "and"
 
-# Set the number of results per section
-section_size = 100
+            }
 
-# Get the start and end dates from the request parameters
-start = '2023-04-13'
-end =  '2023-04-14'
-
-
-# Set up the search query
-query = {
-    "query": {
-        "bool": {
-            "must": [
-                {
-                    "match": {
-                        "slave_id": "0001"
-                    }
-                },
-                {
-                    "range": {
-                        "time": {
-                            "gte": start,
-                            "lte": end
-                        }
-                    }
-                }
-            ]
-        }
-    }
+        ]
 }
+'''
 
-# Use the helpers.scan method to iterate over all results
-for i, hit in enumerate(helpers.scan(
-    es,
-    query=query,
-    index='fluentd',
-    scroll='2m',
-    size=section_size
-)):
-    # Print the first item of each section
-    if i % section_size == 0:
-        print(hit['_source'])
+data = json.loads(json_data)
+
+generated_code = "import redis \nr = redis.Redis() \n"
+first_time = True
+conditions = data['S003']['conditions']
+task = data['S003']['task']
+num_conditions = len(conditions)
+sensors = []
+condition_generate = ""
+for i, condition in enumerate(conditions):
+    content = condition['content']
+    operator = condition['operator']
+    value = condition['value']
+    status = condition['status']
+    if content not in sensors:
+        sensors.append(content)
+
+    if i < num_conditions - 1:
+        condition_code = f"({content} {operator} {value}) {status}"
+    else:
+        condition_code = f"({content} {operator} {value})"
+
+    condition_generate += condition_code
+
+for i in sensors:
+    generated_code += f"{i} =int(r.get('{i}'))\n"
+generated_code += f'if {condition_generate}'
+generated_code += ' : \n \t '
+
+
+print(generated_code)

@@ -2,6 +2,7 @@ from django.urls import path
 
 from api.base.v1.views.actionView import ActionView
 from api.base.v1.views.checkUserView import CheckUserNameView, CheckEmailView
+from api.base.v1.views.googleView import GoogleAuthView, GoogleAuthCallbackView
 from api.base.v1.views.loginView import LoginView
 from api.base.v1.views.permissionView import PermissionView
 from api.base.v1.views.registerView import RegisterView
@@ -21,5 +22,6 @@ urlpatterns = [
     path('v1/action/', ActionView.as_view(), name='get sensors data'),
     path('v1/admin_map/', AdminMapView.as_view(), name='get sensors data'),
     path('v1/report_data/', ReportDataView.as_view(), name='get sensors data'),
-
+    path('auth/google/', GoogleAuthView.as_view(), name='google-auth'),
+    path('auth/google/callback/', GoogleAuthCallbackView.as_view(), name='google-auth-callback'),
 ]

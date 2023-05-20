@@ -37,7 +37,7 @@ class MasterModelDetail(APIView):
 
     @swagger_auto_schema(operation_summary="Retrieve a specific master model",
                          responses={200: MasterModelSerializer()})
-    def get(self, request, pk, format=None):
+    def get(self, request, pk):
         master_model = self.get_object(pk)
         serializer = MasterModelSerializer(master_model)
         return Response(serializer.data)
@@ -45,7 +45,7 @@ class MasterModelDetail(APIView):
     @swagger_auto_schema(operation_summary="Update a specific master model",
                          request_body=MasterModelSerializer,
                          responses={200: MasterModelSerializer()})
-    def put(self, request, pk, format=None):
+    def put(self, request, pk):
         master_model = self.get_object(pk)
         serializer = MasterModelSerializer(master_model, data=request.data)
         if serializer.is_valid():
@@ -55,7 +55,7 @@ class MasterModelDetail(APIView):
 
     @swagger_auto_schema(operation_summary="Delete a specific master model",
                          responses={204: "No content"})
-    def delete(self, request, pk, format=None):
+    def delete(self, request, pk):
         master_model = self.get_object(pk)
         master_model.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
